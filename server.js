@@ -3,6 +3,7 @@ const nunjucks = require('nunjucks')
 
 const server = express()
 const videos = require("./data")
+const { reduce } = require('./data')
 
 server.use(express.static('public'))
 
@@ -32,6 +33,19 @@ server.get("/", function (req, res) {
 
 server.get("/classes", function (req, res) {
     return res.render("classes", { items: videos })
+})
+
+server.get("/video", function(req, res){
+    const id = req.query.id
+    const video = videos.find(function(video){
+        return video.id == id
+    })
+
+    if (!video) {
+        return res.send("Video not found!")
+    }
+
+    return res.render("video", { item: video })
 })
 
 server.listen(5000, function () {
